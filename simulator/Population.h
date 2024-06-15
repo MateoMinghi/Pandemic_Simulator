@@ -1,13 +1,3 @@
-/*
- * Proyecto Simulador Pandemias
- * clase Population
- * Mateo Minghi Vega
- * A01711231
- * 11/06/2024
- * Esta clase defina objeto de tipo Population que contiene todos
- * los atributos y métodos para realizar la simulación de pandemias 
- */
-
 #ifndef POPULATION_H_
 #define POPULATION_H_
 
@@ -18,17 +8,15 @@ using namespace std;
 
 class Population {
 private:
-  //atributos relacionados a la poblacion
   int population_size;
   int vaccination_rate;
   int average_age;
   double num_vaccinated;
   double Vaccine_effectiveness;
-  Person **people; //se define como doble apuntador porque es un arreglo
-  //dinámico cuyo tamaño se define por el usuario
+  Person **people; 
   int counter = 0;
 
-  //atributos para el método numérico de Euler para la simulación
+  //attributes for Euler's method
   int Virus;
   double B;
   double new_B;
@@ -40,29 +28,20 @@ private:
   int days;
   int steps;
 
-  double *S_vaccinated; //arreglo dinámico susceptibles vacunados
-  double *S_non_vaccinated; //arreglo dinámico susceptibles no vacunados
-  double *I; //arreglo dinámico infectados
-  double *R; //arreglo dinámico removidos
+  double *S_vaccinated; 
+  double *S_non_vaccinated; 
+  double *I; 
+  double *R; 
 
 public:
-  //constructor por default y metodos públicos
   Population();
   void create_population();
   double transmission_rate_vaccinated();
   double transmission_rate_non_vaccinated();
   void simulation();
-  void add_person();
-  void print_population();
 };
 
-/*
- * Population() crea la instancia de la población.
- * Permite al usuario establecer el valor de los atributos usados
- * en la simulación de la pandemia.
- * Arreglos dinámicos se establecen aquí porque su tamaño depende 
- * del input del usuario.
- */
+
 Population::Population() {
   cout << "Tamano de la poblacion: ";
   cin >> population_size;
@@ -91,7 +70,7 @@ Population::Population() {
 
 
   num_vaccinated = population_size * (vaccination_rate / 100.0);
-  steps = static_cast<int>(days/dt);//cantidad de pasos del método de Euler
+  steps = static_cast<int>(days/dt);
   people = new Person *[population_size];
 
   S_vaccinated = new double[steps + 1];
@@ -99,20 +78,12 @@ Population::Population() {
   I = new double[steps + 1];
   R = new double[steps + 1];
 
-  S_non_vaccinated[0] = population_size - num_vaccinated;//susceptibles  
-  //vacunados iniciales
-  S_vaccinated[0] = num_vaccinated - I0;//susceptibles no vacunados iniciales
-  I[0] = I0; //Infectados iniciales
-  R[0] = R0; //removidos iniciales
+  S_non_vaccinated[0] = population_size - num_vaccinated;
+  S_vaccinated[0] = num_vaccinated - I0;
+  I[0] = I0; 
+  R[0] = R0; 
 }
 
-/*
- * create_population() automatiza la creación de instancias 
- * de vacunados y no vacunados, en base al porcentaje de vacunación
- * sobre la población total. Esto es definido por el usuario.
- * 
- * Se llena el arreglo dinámico (Person *[population_size])en su totalidad. 
- */
 void Population::create_population() {
   for (int i = 0; i < num_vaccinated; i++) {
     people[counter] = new Vaccinated(average_age, true);
@@ -125,14 +96,6 @@ void Population::create_population() {
   }
 }
 
-/*
- * La tasa de transmisión cambia si una persona está vacunada.
- * 
- * transmission_rate_vaccinated() ajusta el valor de la tasa
- * de transmisión basado en la vacunación y en la edad. 
- *
- * @returns la tasa de transmisión para vacunados
- */
 double Population::transmission_rate_vaccinated() {
   double Age_modifier;
   if (average_age < 18) { 
@@ -145,14 +108,6 @@ double Population::transmission_rate_vaccinated() {
   return B * Age_modifier * (1 - Vaccine_effectiveness);
 }
 
-/*
- * La tasa de transmisión cambia si una persona no está vacunada.
- * 
- * transmission_rate_vaccinated() ajusta el valor de la tasa
- * de transmisión basado en la edad solamente. 
- *
- * @returns la tasa de transmisión para no vacunados
- */
 double Population::transmission_rate_non_vaccinated() {
   double Age_modifier;
   if (average_age < 18) { 
@@ -165,19 +120,6 @@ double Population::transmission_rate_non_vaccinated() {
   return B * Age_modifier;
 }
 
-/*
- * simulation() lleva a cabo la simulación con el método numérico de Euler
- * 
- * Utiliza las tasas de transmisión calculadas anteriormente.
- * Cada iteración calcula el valor siguiente, basado en 
- * las condiciones iniciales definidas en el constructor. 
- *
- * Imprime el último valor calculado, que coincide con el número de días que
- * se quiere correr la simulación. Se aplica un condicional para evitar
- * que se impriman valores sin sentido.
- *
- * setprecision() imprime valores con solo dos decimales.
- */
 void Population::simulation() {
   double b_v = transmission_rate_vaccinated();
   double b_nv = transmission_rate_non_vaccinated();
@@ -210,38 +152,5 @@ void Population::simulation() {
   cout << fixed << setprecision(2) << "Removidos: " << R[steps] << endl;
 }
 
-
-/*
- * add_person() crea un objeto de tipo Person, vacunado o no vacunado,
- * y lo agrega al arreglo de la población. 
- * Como ese arreglo está lleno en su totalidad, se le suma a population_size
- * para abrir más espacio en memoria.
- */
-void Population::add_person(){
-  int decision; 
-  cout << "Agregar vacunado(1) o no vacunado(2) a la poblacion?: ";
-  cin >> decision;
-
-  if (decision == 1){
-    people[counter] = new Vaccinated(average_age, true);
-    counter++;
-    population_size++;}
-  else if (decision == 2){
-    people[counter] = new NonVaccinated(average_age, false);
-    counter++;
-    population_size++;}
-}
-
-/*
- * print_population() recorre el arreglo de instancias de Person
- * y utiliza el método print_person(), declarado dentro de las clases
- * de Person, para imprimir datos de cada persona.
- *
- * No recomendado usarlo si la población es muy grande.
- */
-void Population::print_population(){
-  for (int i = 0; i < counter; i++)
-    people[i] -> print_person();
-}
 
 #endif
