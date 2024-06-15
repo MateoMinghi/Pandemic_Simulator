@@ -1,13 +1,3 @@
-/*
- * Proyecto Simulador Pandemias
- * clase Person
- * Mateo Minghi Vega
- * A01711231
- * 11/06/2024
- * Esta clase define objeto de tipo Person que contiene 
- * las clases heredadas de Vaccinated y NonVaccinated. 
- */
-
 #ifndef PERSON_H_
 #define PERSON_H_
 
