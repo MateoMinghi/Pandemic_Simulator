@@ -152,7 +152,7 @@ void Population::simulation() {
       cout << "After " << n << " days:" << endl; 
       cout << "Susceptible: " << S_vaccinated[n + 1] + 
         S_non_vaccinated[n + 1] << endl;
-      cout << "Inffected: " << I[n + 1] << endl;
+      cout << "Infected: " << I[n + 1] << endl;
       cout << "Removed: " << R[n + 1] << endl;
       break; 
     }
@@ -161,7 +161,7 @@ void Population::simulation() {
   cout << "After " << days << " days:" << endl;
   cout << fixed << setprecision(2) << "Susceptibles: " << 
     S_vaccinated[steps] + S_non_vaccinated[steps] << endl;
-  cout << fixed << setprecision(2) << "Inffected: " << I[steps] << endl;
+  cout << fixed << setprecision(2) << "Infected: " << I[steps] << endl;
   cout << fixed << setprecision(2) << "Removed: " << R[steps] << endl;
 }
 

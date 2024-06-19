@@ -42,3 +42,16 @@ In order to solve the differential equations, thus allowing us to know the numbe
 
 3. **Recovered Population (R)**:
    ${R_{n+1}} = {R_n} + {\gamma I_n \Delta t}$
+
+
+## Functionality
+
+The user can set:
+
+*  Average age of the population (affects transmission rate)
+*  Variant of the virus (affects transmission rate)
+*  Percentage of the population that is vaccinated (affects transmission rate)
+*  Initial number of infected individuals
+*  Number of days to run the simulation
+
+For further customization, you can change the base tranmission rates for each variant in the constructor of the Population.h file.
