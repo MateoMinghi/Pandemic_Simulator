@@ -9,7 +9,7 @@ using namespace std;
 class Population {
 private:
   int population_size;
-  int vaccination_rate;
+  double vaccination_rate;
   int average_age;
   double num_vaccinated;
   double Vaccine_effectiveness;
@@ -35,6 +35,7 @@ private:
 
 public:
   Population();
+  ~Population();
   void create_population();
   double transmission_rate_vaccinated();
   double transmission_rate_non_vaccinated();
@@ -43,33 +44,33 @@ public:
 
 
 Population::Population() {
-  cout << "Tamano de la poblacion: ";
+  cout << "Population size: ";
   cin >> population_size;
   
-  cout << "Elige una variante para infectar a la poblacion:" << endl;
+  cout << "Choose a variant to inffect the population:" << endl;
   cout << "Original (1), Omnicron(2), Delta(3): ";
   cin >> Virus;
   if (Virus == 1){B = 0.7;}
   else if (Virus == 2){B = 0.9;}
   else if (Virus == 3){B = 0.8;}
 
-  cout << "Porcentaje de la poblacion vacunada: ";
+  cout << "Percentage of vaccinated people: ";
   cin >> vaccination_rate;
 
-  cout << "Efectividad de la vacuna: ";
+  cout << "Vaccine effectiveness: ";
   cin >> Vaccine_effectiveness;
 
-  cout << "Edad promedio de la poblacion: ";
+  cout << "Average population age: ";
   cin >> average_age;
 
-  cout << "Cantidad de infectados para iniciar la simulacion: ";
+  cout << "Number of initial inffected individuals: ";
   cin >> I0;
 
-  cout << "Numero de dias para correr la simulacion: ";
+  cout << "Number of days to run the simulation: ";
   cin >> days;
 
 
-  num_vaccinated = population_size * (vaccination_rate / 100.0);
+  num_vaccinated = population_size * vaccination_rate;
   steps = static_cast<int>(days/dt);
   people = new Person *[population_size];
 
@@ -94,6 +95,18 @@ void Population::create_population() {
     people[counter] = new NonVaccinated(average_age, false);
     counter++;
   }
+}
+
+Population::~Population() {
+  delete[] S_vaccinated;
+  delete[] S_non_vaccinated;
+  delete[] I;
+  delete[] R;
+
+  for (int i = 0; i < population_size; ++i) {
+    delete people[i];
+  }
+  delete[] people;
 }
 
 double Population::transmission_rate_vaccinated() {
@@ -136,20 +149,20 @@ void Population::simulation() {
 
     if (S_non_vaccinated[n + 1] < 0 || S_vaccinated[n + 1] < 0 || 
         I[n + 1] < 0 || R[n + 1] < 0) {
-      cout << "Despues de " << n << " dias:" << endl; 
-      cout << "Susceptibles: " << S_vaccinated[n + 1] + 
+      cout << "After " << n << " days:" << endl; 
+      cout << "Susceptible: " << S_vaccinated[n + 1] + 
         S_non_vaccinated[n + 1] << endl;
-      cout << "Infectados: " << I[n + 1] << endl;
-      cout << "Removidos: " << R[n + 1] << endl;
+      cout << "Inffected: " << I[n + 1] << endl;
+      cout << "Removed: " << R[n + 1] << endl;
       break; 
     }
   }
 
-  cout << "Despues de " << days << " dias:" << endl;
+  cout << "After " << days << " days:" << endl;
   cout << fixed << setprecision(2) << "Susceptibles: " << 
     S_vaccinated[steps] + S_non_vaccinated[steps] << endl;
-  cout << fixed << setprecision(2) << "Infectados: " << I[steps] << endl;
-  cout << fixed << setprecision(2) << "Removidos: " << R[steps] << endl;
+  cout << fixed << setprecision(2) << "Inffected: " << I[steps] << endl;
+  cout << fixed << setprecision(2) << "Removed: " << R[steps] << endl;
 }
 
 
